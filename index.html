@@ -13,11 +13,6 @@
     </div>
 
     <div id="gameContainer" class="game-container hidden">
-        <!-- <div class="game-header">
-            <h1 class="game-title">FAME STICKERS</h1>
-            <p class="game-subtitle">Album de Figurinhas da Copa dos Famosos</p>
-        </div> -->
-
         <div class="hint-panel">
             <div class="hint-header">DICA ATUAL</div>
             <div id="hintContent" class="hint-text">Clique em DICA para uma ajuda</div>
@@ -73,6 +68,16 @@
             <div id="messageContent" class="message-text">Pronto para adivinhar</div>
         </div>
     </div>
+
+    <div id="finalScreen" class="final-screen hidden">
+        <div class="final-card">
+            <h2 class="final-title">RESULTADO FINAL</h2>
+            <div id="finalDetails" class="final-details"></div>
+            <div class="final-total" id="finalTotalPoints"></div>
+            <button id="restartGameBtn" class="start-button restart-button">JOGAR NOVAMENTE</button>
+        </div>
+    </div>
+
     <script src="./src/js/script.js"></script>
 </body>
 </html>

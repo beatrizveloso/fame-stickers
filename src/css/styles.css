@@ -31,34 +31,25 @@ body {
 
 .start-button{
     position: relative;
-
     min-width: 240px;
     height: 68px;
-
     border-radius: 999px;
     border: 3px solid rgba(255,255,255,0.55);
-
     cursor: pointer;
     overflow: hidden;
-
     font-family: 'Poppins', sans-serif;
     font-size: 1.25rem;
     font-weight: 800;
     letter-spacing: 3px;
     color: white;
-
-    text-shadow:
-        0 2px 3px rgba(0,0,0,0.8);
-
+    text-shadow: 0 2px 3px rgba(0,0,0,0.8);
     transition: all 0.2s ease;
-
     background: linear-gradient(
         to bottom,
         #7bc6ff 0%,
         #3f82ff 42%,
         #1d4fbf 100%
     );
-
     box-shadow:
         inset 0 3px 6px rgba(255,255,255,0.35),
         inset 0 -5px 8px rgba(0,0,0,0.35),
@@ -67,17 +58,12 @@ body {
 
 .start-button::before{
     content:"";
-
     position:absolute;
-
     top:4px;
     left:10px;
     right:10px;
-
     height:45%;
-
     border-radius:999px;
-
     background: linear-gradient(
         to bottom,
         rgba(255,255,255,0.75),
@@ -87,12 +73,9 @@ body {
 
 .start-button::after{
     content:"";
-
     position:absolute;
     inset:0;
-
     border-radius:999px;
-
     box-shadow:
         inset 0 1px 0 rgba(255,255,255,0.4),
         inset 0 -2px 4px rgba(0,0,0,0.35);
@@ -101,7 +84,6 @@ body {
 .start-button:hover{
     transform: scale(1.04);
     filter: brightness(1.08);
-
     box-shadow:
         inset 0 3px 6px rgba(255,255,255,0.4),
         inset 0 -5px 8px rgba(0,0,0,0.35),
@@ -237,6 +219,8 @@ body::after {
     box-shadow: 0 15px 25px rgba(0,0,0,0.2), inset 0 1px 1px rgba(255,255,255,0.3);
     backdrop-filter: blur(4px);
     display: inline-block;
+    overflow: hidden;
+    transform: scale(1);
     transition: transform 0.3s cubic-bezier(0.2, 0.9, 0.4, 1.1);
 }
 
@@ -246,9 +230,15 @@ body::after {
     object-fit: cover;
     border-radius: 14px;
     filter: blur(20px);
-    transition: filter 0.4s cubic-bezier(0.2, 0.9, 0.4, 1.1), transform 0.4s ease;
+    transform: scale(1);
+    transition:
+        filter 0.35s ease,
+        transform 0.35s ease,
+        opacity 0.2s ease;
     display: block;
     background: #e8e0c8;
+    backface-visibility: hidden;
+    will-change: transform, filter;
 }
 
 .sticker-clear {
@@ -256,8 +246,19 @@ body::after {
 }
 
 .sticker-expanded {
-    transform: scale(1.15);
-    transition: transform 0.5s cubic-bezier(0.2, 0.9, 0.4, 1.2);
+    animation: stickerZoom 0.7s ease forwards;
+}
+
+@keyframes stickerZoom {
+    0% {
+        transform: scale(1);
+    }
+    50% {
+        transform: scale(1.12);
+    }
+    100% {
+        transform: scale(1);
+    }
 }
 
 .attempts-counter {
@@ -385,6 +386,14 @@ body::after {
     overflow-y: auto;
 }
 
+.ranking-list::-webkit-scrollbar {
+    display: none;
+}
+
+.ranking-list {
+    scrollbar-width: none;
+}
+
 .ranking-list li {
     background: rgba(64,90,165,0.5);
     backdrop-filter: blur(4px);
@@ -450,26 +459,18 @@ body::after {
 
 .btn{
     position: relative;
-
     min-width: 135px;
     height: 48px;
-
     border-radius: 999px;
     border: 2px solid rgba(255,255,255,0.45);
-
     cursor: pointer;
-
     font-family: 'Poppins', sans-serif;
     font-size: 0.85rem;
     font-weight: 800;
     letter-spacing: 1px;
     color: white;
-
-    text-shadow:
-        0 1px 2px rgba(0,0,0,0.9);
-
+    text-shadow: 0 1px 2px rgba(0,0,0,0.9);
     transition: 0.2s ease;
-
     overflow: hidden;
 }
 
@@ -480,9 +481,7 @@ body::after {
     left: 8px;
     right: 8px;
     height: 45%;
-
     border-radius: 999px;
-
     background: linear-gradient(
         to bottom,
         rgba(255,255,255,0.65),
@@ -494,9 +493,7 @@ body::after {
     content: "";
     position: absolute;
     inset: 0;
-
     border-radius: 999px;
-
     box-shadow:
         inset 0 3px 5px rgba(255,255,255,0.25),
         inset 0 -4px 6px rgba(0,0,0,0.35),
@@ -584,30 +581,117 @@ body::after {
     transition: color 0.2s;
 }
 
+.final-screen {
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.9);
+    backdrop-filter: blur(8px);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 2000;
+    padding: 20px;
+}
+
+.final-card {
+    background: rgba(64,90,165,0.95);
+    backdrop-filter: blur(12px);
+    border-radius: 48px;
+    padding: 30px;
+    max-width: 600px;
+    width: 100%;
+    max-height: 80vh;
+    overflow-y: auto;
+    overflow-x: hidden;
+    scrollbar-width: none;
+    border: 2px solid #EFBD14;
+    box-shadow: 0 20px 40px rgba(0,0,0,0.5);
+    text-align: center;
+}
+
+.final-card::-webkit-scrollbar {
+    display: none;
+}
+
+.final-title {
+    color: #EFBD14;
+    font-size: 2rem;
+    margin-bottom: 20px;
+    letter-spacing: 3px;
+}
+
+.final-details {
+    text-align: left;
+    margin-bottom: 20px;
+    color: white;
+}
+
+.final-round-item {
+    background: rgba(0,0,0,0.4);
+    margin: 12px 0;
+    padding: 12px;
+    border-radius: 20px;
+    border-left: 5px solid #EFBD14;
+}
+
+.final-round-header {
+    font-weight: 800;
+    color: #EFBD14;
+    margin-bottom: 6px;
+}
+
+.final-round-detail {
+    font-size: 0.85rem;
+    display: flex;
+    justify-content: space-between;
+    margin: 4px 0;
+}
+
+.final-total {
+    font-size: 1.8rem;
+    font-weight: 800;
+    color: #EFBD14;
+    margin: 20px 0;
+    padding-top: 15px;
+    border-top: 2px solid rgba(239,189,20,0.5);
+}
+
+.restart-button {
+    margin-top: 15px;
+    min-width: 200px;
+    height: 55px;
+    font-size: 1rem;
+}
+
 @media (max-width: 850px) {
     .game-layout {
         flex-direction: column;
         align-items: center;
     }
+
     .stats-column {
         flex-direction: row;
         width: 100%;
         justify-content: center;
         gap: 20px;
     }
+
     .ranking-column {
         width: 100%;
         flex-direction: row;
         justify-content: center;
         gap: 20px;
     }
+
     .ranking-section {
         width: auto;
         min-width: 200px;
     }
+
     .hint-panel {
         max-width: 280px;
     }
+
     .message-panel {
         max-width: 260px;
     }
@@ -618,36 +702,49 @@ body::after {
         margin: 15px;
         padding: 20px;
     }
+
     .sticker-blurred {
         width: 200px;
         height: 265px;
     }
+
     .game-title {
         font-size: 1.6rem;
     }
+
     .btn {
         padding: 8px 20px;
         font-size: 0.8rem;
     }
+
     .start-button {
         font-size: 1.2rem;
         padding: 12px 40px;
     }
+
     .stat-value {
         font-size: 1.6rem;
     }
+
     .ranking-column {
         flex-direction: column;
         align-items: center;
     }
+
     .answer-input {
         width: 220px;
     }
+
     .hint-panel {
         max-width: 240px;
     }
+
     .message-panel {
         max-width: 220px;
+    }
+
+    .final-card {
+        padding: 20px;
     }
 }
 
@@ -660,6 +757,7 @@ body::after {
         opacity: 1;
         transform: scale(1);
     }
+
     100% {
         opacity: 0;
         transform: scale(0.8);
