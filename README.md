@@ -10,13 +10,7 @@ O jogador precisa descobrir qual famoso está escondido na figurinha borrada usa
 
 Quanto menos dicas usar, mais pontos ganha.
 
-## 🚀 Tecnologias
-
-* HTML
-* CSS
-* JavaScript
-
-## 🎮 Acesse o jogo
+## 🎮 Acesso ao jogo
 
 🔗 [Jogar Fame Stickers](COLE_AQUI_O_LINK_DA_VERCEL)
 
@@ -31,11 +25,4 @@ A pontuação depende da quantidade de dicas utilizadas:
 
 O objetivo é acertar o famoso com o menor número possível de dicas para conseguir mais pontos.
 
-## ✨ Funcionalidades
-
-* Sistema de dicas
-* Pontuação
-* Figurinhas borradas/pixeladas
-* Aceita respostas com ou sem acento
-* Visual inspirado em álbum de figurinhas/Y2K
 
