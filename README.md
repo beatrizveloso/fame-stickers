@@ -1,6 +1,6 @@
 # 🎴 Fame Stickers
 
-Fame Stickers é um joguinho de adivinhação inspirado em figurinhas de álbum da Copa, mas com celebridades! ⭐
+Fame Stickers é um joguinho de adivinhação inspirado em figurinhas de álbum da Copa, mas com celebridades! 
 
 O jogador precisa descobrir qual famoso está escondido na figurinha borrada usando dicas como:
 
@@ -9,10 +9,6 @@ O jogador precisa descobrir qual famoso está escondido na figurinha borrada usa
 * 💬 Frase icônica
 
 Quanto menos dicas usar, mais pontos ganha.
-
-## 🎮 Acesso ao jogo
-
-🔗 [Jogar Fame Stickers](COLE_AQUI_O_LINK_DA_VERCEL)
 
 ## 🏆 Sistema de Pontuação
 
@@ -25,4 +21,7 @@ A pontuação depende da quantidade de dicas utilizadas:
 
 O objetivo é acertar o famoso com o menor número possível de dicas para conseguir mais pontos.
 
+## 🎮 Acesse o jogo
+
+Para acessar o jogo clique no link da Vercel ao lado.
 
