@@ -31,6 +31,10 @@ let waitingForNext = false;
 let lastStickerIndex = -1;
 let roundHistory = [];
 let localRanking = [];
+let attemptsRemaining = 3;
+let animationTimeout = null;
+let nextStickerTimeout = null;
+let errorTimeout = null;
 
 function normalizeString(str) {
     return str.toLowerCase()
@@ -85,6 +89,18 @@ function updateTotalScoreUI() {
     if (streakSpan) streakSpan.innerText = totalScore;
 }
 
+function updateAttemptsUI() {
+    const attemptsSpan = document.getElementById('attemptsCounter');
+    if (attemptsSpan) {
+        attemptsSpan.innerText = `Tentativas: ${attemptsRemaining}/3`;
+        if (attemptsRemaining === 0) {
+            attemptsSpan.style.color = '#ff6666';
+        } else {
+            attemptsSpan.style.color = '#EFBD14';
+        }
+    }
+}
+
 function updateRoundHistoryUI() {
     const roundList = document.getElementById('roundScoreList');
     if (!roundList) return;
@@ -117,6 +133,39 @@ function showMessage(msg, isError = false) {
     }
 }
 
+function highlightInputError() {
+    const inputField = document.getElementById('answerInput');
+    if (!inputField) return;
+    
+    if (errorTimeout) clearTimeout(errorTimeout);
+    
+    inputField.classList.add('answer-input-error');
+    
+    errorTimeout = setTimeout(() => {
+        if (inputField) {
+            inputField.classList.remove('answer-input-error');
+        }
+        errorTimeout = null;
+    }, 500);
+}
+
+function clearInput() {
+    const inputField = document.getElementById('answerInput');
+    if (inputField) {
+        inputField.value = '';
+    }
+}
+
+function revealSticker() {
+    const img = document.getElementById('stickerImage');
+    const glitterDiv = document.getElementById('glitterContainer');
+    
+    img.classList.remove('sticker-blurred');
+    img.classList.add('sticker-clear');
+    glitterDiv.classList.remove('hidden');
+    glitterDiv.classList.add('glitter-active');
+}
+
 function triggerPremiumAnimation() {
     const img = document.getElementById('stickerImage');
     const card = document.getElementById('stickerCard');
@@ -134,10 +183,97 @@ function triggerPremiumAnimation() {
         card.classList.remove('holographic-glow');
     }, 800);
     
-    setTimeout(() => {
+    animationTimeout = setTimeout(() => {
         glitterDiv.classList.remove('glitter-active');
         glitterDiv.classList.add('hidden');
-    }, 1200);
+        
+        const stickerCard = document.getElementById('stickerCard');
+        const stickerImg = document.getElementById('stickerImage');
+        
+        stickerCard.classList.add('sticker-fade-out');
+        stickerImg.classList.add('sticker-fade-out');
+        
+        setTimeout(() => {
+            loadRandomSticker();
+            resetForNewRound();
+            stickerCard.classList.remove('sticker-fade-out');
+            stickerImg.classList.remove('sticker-fade-out');
+            showMessage('Nova figurinha! Tente adivinhar', false);
+        }, 500);
+    }, 5000);
+}
+
+function handleGameOver() {
+    const img = document.getElementById('stickerImage');
+    const glitterDiv = document.getElementById('glitterContainer');
+    
+    revealSticker();
+    
+    img.classList.add('sticker-expanded');
+    const card = document.getElementById('stickerCard');
+    card.classList.add('holographic-glow');
+    
+    setTimeout(() => {
+        img.classList.remove('sticker-expanded');
+        card.classList.remove('holographic-glow');
+    }, 800);
+    
+    showMessage(`Você perdeu! Era ${currentSticker.nome.toUpperCase()}`, true);
+    
+    isAnswered = true;
+    waitingForNext = true;
+    
+    const inputField = document.getElementById('answerInput');
+    const answerBtn = document.getElementById('answerBtn');
+    const hintBtn = document.getElementById('hintBtn');
+    if (inputField) inputField.disabled = true;
+    if (answerBtn) answerBtn.disabled = true;
+    if (hintBtn) hintBtn.disabled = true;
+    
+    nextStickerTimeout = setTimeout(() => {
+        glitterDiv.classList.remove('glitter-active');
+        glitterDiv.classList.add('hidden');
+        
+        const stickerCard = document.getElementById('stickerCard');
+        const stickerImg = document.getElementById('stickerImage');
+        
+        stickerCard.classList.add('sticker-fade-out');
+        stickerImg.classList.add('sticker-fade-out');
+        
+        setTimeout(() => {
+            loadRandomSticker();
+            resetForNewRound();
+            stickerCard.classList.remove('sticker-fade-out');
+            stickerImg.classList.remove('sticker-fade-out');
+            showMessage('Nova figurinha! Tente adivinhar', false);
+        }, 500);
+    }, 4000);
+}
+
+function resetForNewRound() {
+    attemptsRemaining = 3;
+    hintsUsed = 0;
+    isAnswered = false;
+    waitingForNext = false;
+    
+    updateAttemptsUI();
+    
+    const inputField = document.getElementById('answerInput');
+    const answerBtn = document.getElementById('answerBtn');
+    const hintBtn = document.getElementById('hintBtn');
+    
+    if (inputField) {
+        inputField.disabled = false;
+        inputField.value = '';
+    }
+    if (answerBtn) answerBtn.disabled = false;
+    if (hintBtn) hintBtn.disabled = false;
+    
+    const hintDiv = document.getElementById('hintContent');
+    if (hintDiv) hintDiv.innerText = 'Clique em DICA para uma ajuda';
+    
+    if (animationTimeout) clearTimeout(animationTimeout);
+    if (nextStickerTimeout) clearTimeout(nextStickerTimeout);
 }
 
 function resetUIForNewSticker() {
@@ -145,7 +281,9 @@ function resetUIForNewSticker() {
     const glitterDiv = document.getElementById('glitterContainer');
     glitterDiv.classList.remove('glitter-active');
     glitterDiv.classList.add('hidden');
+    
     img.classList.remove('sticker-clear', 'sticker-expanded');
+    img.style.filter = 'blur(20px)';
     img.classList.add('sticker-blurred');
     
     const hintDiv = document.getElementById('hintContent');
@@ -165,6 +303,8 @@ function resetUIForNewSticker() {
     isAnswered = false;
     waitingForNext = false;
     hintsUsed = 0;
+    attemptsRemaining = 3;
+    updateAttemptsUI();
 }
 
 function getRandomStickerExcludingLast() {
@@ -180,9 +320,17 @@ function loadRandomSticker() {
     currentSticker = getRandomStickerExcludingLast();
     const imgElement = document.getElementById('stickerImage');
     imgElement.src = currentSticker.imagem;
+    imgElement.onload = function() {
+        imgElement.classList.add('sticker-blurred');
+        imgElement.style.filter = 'blur(20px)';
+    };
     imgElement.onerror = function() {
         this.src = currentSticker.imagem;
+        imgElement.classList.add('sticker-blurred');
+        imgElement.style.filter = 'blur(20px)';
     };
+    imgElement.classList.add('sticker-blurred');
+    imgElement.style.filter = 'blur(20px)';
     resetUIForNewSticker();
 }
 
@@ -202,17 +350,19 @@ function giveHint() {
     if (hintsUsed === 0) {
         document.getElementById('hintContent').innerHTML = `País: ${currentSticker.pais}`;
         showMessage('Dica 1/3: País de origem');
+        hintsUsed++;
     } else if (hintsUsed === 1) {
         document.getElementById('hintContent').innerHTML = `Profissão: ${currentSticker.profissao}`;
         showMessage('Dica 2/3: Profissão');
+        hintsUsed++;
     } else if (hintsUsed === 2) {
         document.getElementById('hintContent').innerHTML = `Frase: "${currentSticker.frase}"`;
         showMessage('Dica 3/3: Frase icônica');
+        hintsUsed++;
     } else {
         showMessage('Você já usou todas as dicas!', false);
         return;
     }
-    hintsUsed++;
 }
 
 function handleCorrectAnswer(points) {
@@ -225,7 +375,7 @@ function handleCorrectAnswer(points) {
     addToLocalRanking(totalScore);
     
     triggerPremiumAnimation();
-    showMessage(`ACERTOU! +${points} pts! Era ${currentSticker.nome.toUpperCase()} 🎉`, false);
+    showMessage(`ACERTOU! +${points} pts! Era ${currentSticker.nome.toUpperCase()}`, false);
     
     isAnswered = true;
     waitingForNext = true;
@@ -236,25 +386,11 @@ function handleCorrectAnswer(points) {
     if (inputField) inputField.disabled = true;
     if (answerBtn) answerBtn.disabled = true;
     if (hintBtn) hintBtn.disabled = true;
-    
-    const clickHandler = function(e) {
-        if (!waitingForNext) return;
-        waitingForNext = false;
-        loadRandomSticker();
-        showMessage('Nova figurinha! Tente adivinhar', false);
-        document.removeEventListener('click', clickHandler);
-    };
-    document.addEventListener('click', clickHandler);
-    setTimeout(() => {
-        if (waitingForNext) {
-            showMessage('Clique em qualquer lugar para próxima figurinha', false);
-        }
-    }, 300);
 }
 
 function checkAnswer() {
     if (waitingForNext || isAnswered) {
-        showMessage('Aguardando próxima figurinha... clique na tela!', false);
+        showMessage('Aguardando próxima figurinha...', false);
         return;
     }
     if (!currentSticker) return;
@@ -262,6 +398,7 @@ function checkAnswer() {
     const userAnswer = document.getElementById('answerInput').value;
     if (!userAnswer.trim()) {
         showMessage('Digite um nome!', true);
+        highlightInputError();
         return;
     }
     
@@ -272,10 +409,19 @@ function checkAnswer() {
         const pointsEarned = calculatePoints();
         handleCorrectAnswer(pointsEarned);
     } else {
-        showMessage(`Não é "${userAnswer}". Tente novamente!`, true);
-        const imgEl = document.getElementById('stickerImage');
-        imgEl.style.transform = 'scale(0.98)';
-        setTimeout(() => { if(imgEl) imgEl.style.transform = ''; }, 200);
+        attemptsRemaining--;
+        updateAttemptsUI();
+        highlightInputError();
+        clearInput();
+        
+        if (attemptsRemaining === 0) {
+            handleGameOver();
+        } else {
+            showMessage(`Errado! Tentativas restantes: ${attemptsRemaining}`, true);
+            const imgEl = document.getElementById('stickerImage');
+            imgEl.style.transform = 'scale(0.98)';
+            setTimeout(() => { if(imgEl) imgEl.style.transform = ''; }, 200);
+        }
     }
 }
 
@@ -292,9 +438,12 @@ function startGame() {
     waitingForNext = false;
     roundHistory = [];
     lastStickerIndex = -1;
+    attemptsRemaining = 3;
+    
     updateRoundScoreUI();
     updateTotalScoreUI();
     updateRoundHistoryUI();
+    updateAttemptsUI();
     loadLocalRanking();
     
     loadRandomSticker();

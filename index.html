@@ -9,13 +9,18 @@
 </head>
 <body>
     <div id="coverScreen" class="cover-screen">
-        <button id="startGameBtn" class="start-button">COMECAR</button>
+        <button id="startGameBtn" class="start-button">COMEÇAR</button>
     </div>
 
     <div id="gameContainer" class="game-container hidden">
-        <div class="game-header">
+        <!-- <div class="game-header">
             <h1 class="game-title">FAME STICKERS</h1>
             <p class="game-subtitle">Album de Figurinhas da Copa dos Famosos</p>
+        </div> -->
+
+        <div class="hint-panel">
+            <div class="hint-header">DICA ATUAL</div>
+            <div id="hintContent" class="hint-text">Clique em DICA para uma ajuda</div>
         </div>
 
         <div class="game-layout">
@@ -35,6 +40,7 @@
                     <img id="stickerImage" class="sticker-blurred" src="" alt="">
                     <div id="glitterContainer" class="glitter-container"></div>
                 </div>
+                <div class="attempts-counter" id="attemptsCounter">Tentativas: 3/3</div>
             </div>
 
             <div class="ranking-column">
@@ -44,25 +50,27 @@
                         <li class="empty-ranking">Nenhuma rodada ainda</li>
                     </ul>
                 </div>
-               
             </div>
         </div>
 
         <div class="controls-area">
-            <input type="text" id="answerInput" class="answer-input" placeholder="Digite o nome do famoso..." autocomplete="off">
+            <div class="input-wrapper">
+                <input type="text" id="answerInput" class="answer-input" placeholder="Digite o nome do famoso..." autocomplete="off">
+            </div>
+
             <div class="buttons-row">
-                <button id="answerBtn" class="btn btn-answer">RESPONDER</button>
-                <button id="hintBtn" class="btn btn-hint">DICA</button>
+                <button id="answerBtn" class="btn btn-answer">
+                    RESPONDER
+                </button>
+
+                <button id="hintBtn" class="btn btn-hint">
+                    DICA
+                </button>
             </div>
         </div>
 
-        <div class="hint-panel">
-            <div class="hint-header">DICA ATUAL</div>
-            <div id="hintContent" class="hint-text">Clique em DICA para uma ajuda</div>
-        </div>
-
         <div class="message-panel">
-            <div id="messageContent" class="message-text">Pronto para adivinhar?</div>
+            <div id="messageContent" class="message-text">Pronto para adivinhar</div>
         </div>
     </div>
     <script src="./src/js/script.js"></script>
