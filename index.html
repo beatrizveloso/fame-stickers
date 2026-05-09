@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>Fame Stickers</title>
+    <link rel="stylesheet" href="./src/css/styles.css">
+    <link rel="icon" href="/src/images/taca-icon.png">
+</head>
+<body>
+    <div id="coverScreen" class="cover-screen">
+        <button id="startGameBtn" class="start-button">COMECAR</button>
+    </div>
+
+    <div id="gameContainer" class="game-container hidden">
+        <div class="game-header">
+            <h1 class="game-title">FAME STICKERS</h1>
+            <p class="game-subtitle">Album de Figurinhas da Copa dos Famosos</p>
+        </div>
+
+        <div class="game-layout">
+            <div class="stats-column">
+                <div class="stat-card">
+                    <div class="stat-label">PONTUAÇÃO POR RODADA</div>
+                    <div class="stat-value" id="scoreValue">0</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-label">PONTUAÇÃO TOTAL</div>
+                    <div class="stat-value" id="streakValue">0</div>
+                </div>
+            </div>
+
+            <div class="sticker-wrapper">
+                <div class="sticker-card" id="stickerCard">
+                    <img id="stickerImage" class="sticker-blurred" src="" alt="">
+                    <div id="glitterContainer" class="glitter-container"></div>
+                </div>
+            </div>
+
+            <div class="ranking-column">
+                <div class="ranking-section">
+                    <div class="ranking-title">PONTUAÇÃO POR RODADA</div>
+                    <ul id="roundScoreList" class="ranking-list">
+                        <li class="empty-ranking">Nenhuma rodada ainda</li>
+                    </ul>
+                </div>
+               
+            </div>
+        </div>
+
+        <div class="controls-area">
+            <input type="text" id="answerInput" class="answer-input" placeholder="Digite o nome do famoso..." autocomplete="off">
+            <div class="buttons-row">
+                <button id="answerBtn" class="btn btn-answer">RESPONDER</button>
+                <button id="hintBtn" class="btn btn-hint">DICA</button>
+            </div>
+        </div>
+
+        <div class="hint-panel">
+            <div class="hint-header">DICA ATUAL</div>
+            <div id="hintContent" class="hint-text">Clique em DICA para uma ajuda</div>
+        </div>
+
+        <div class="message-panel">
+            <div id="messageContent" class="message-text">Pronto para adivinhar?</div>
+        </div>
+    </div>
+    <script src="./src/js/script.js"></script>
+</body>
+</html>
