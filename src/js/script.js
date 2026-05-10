@@ -19,6 +19,97 @@ imagem: "./src/images/kim-namjoon.png",
 pais: "Coreia do Sul",
 profissao: "Rapper",
 frase: "RM"
+},
+{
+nome: "justin bieber",
+imagem: "./src/images/justin-bieber.png",
+pais: "Canadá",
+profissao: "Cantor",
+frase: "Baby"
+},
+{
+nome: "tobey maguire",
+imagem: "./src/images/tobey-maguire.png",
+pais: "Estados Unidos",
+profissao: "Ator",
+frase: "Homem-Aranha"
+},
+{
+nome: "andrew garfield",
+imagem: "./src/images/andrew-garfield.png",
+pais: "Estados Unidos",
+profissao: "Ator",
+frase: "The Amazing Spider-Man"
+},
+{
+nome: "tom holland",
+imagem: "./src/images/tom-holland.png",
+pais: "Reino Unido",
+profissao: "Ator",
+frase: "Marvel"
+},
+{
+nome: "hyunjin",
+imagem: "./src/images/hyunjin.png",
+pais: "Coreia do Sul",
+profissao: "Cantor",
+frase: "Stray Kids"
+},
+{
+nome: "felix",
+imagem: "./src/images/felix.png",
+pais: "Austrália",
+profissao: "Cantor",
+frase: "Deep Voice"
+},
+{
+nome: "zayn malik",
+imagem: "./src/images/zayn-malik.png",
+pais: "Reino Unido",
+profissao: "Cantor",
+frase: "Pillowtalk"
+},
+{
+nome: "kim seokjin",
+imagem: "./src/images/kim-seokjin.png",
+pais: "Coreia do Sul",
+profissao: "Cantor",
+frase: "Worldwide Handsome"
+},
+{
+nome: "louis tomlinson",
+imagem: "./src/images/louis-tomlinson.png",
+pais: "Reino Unido",
+profissao: "Cantor",
+frase: "One Direction"
+},
+{
+nome: "harry styles",
+imagem: "./src/images/harry-styles.png",
+pais: "Reino Unido",
+profissao: "Cantor",
+frase: "Watermelon Sugar"
+},
+{
+nome: "niall horan",
+imagem: "./src/images/niall-horan.png",
+pais: "Irlanda",
+profissao: "Cantor",
+frase: "Slow Hands"
+},
+{
+nome: "kim taehyung",
+imagem: "./src/images/kim-taehyung.png",
+pais: "Coreia do Sul",
+profissao: "Cantor",
+frase: "V"
+},
+{
+nome: "min yoongi",
+imagem: "./src/images/min-yoongi.png",
+pais: "Coreia do Sul",
+profissao: "Rapper",
+frase: "Suga"
 }
 ];
 
@@ -33,7 +124,7 @@ let attemptsRemaining = 3;
 let animationTimeout = null;
 let errorTimeout = null;
 let roundDetails = [];
-let lastStickerIndex = -1;
+let usedStickerIndexes = [];
 
 function normalizeString(str) {
     return str.toLowerCase()
@@ -179,16 +270,22 @@ function calculatePoints() {
     return 10;
 }
 
-function getRandomStickerExcludingLast() {
-    let index = Math.floor(Math.random() * stickersData.length);
-
-    while (index === lastStickerIndex && stickersData.length > 1) {
-        index = Math.floor(Math.random() * stickersData.length);
+function getRandomStickerWithoutRepeat() {
+    if (usedStickerIndexes.length >= stickersData.length) {
+        usedStickerIndexes = [];
     }
 
-    lastStickerIndex = index;
+    let availableIndexes = stickersData
+        .map((_, index) => index)
+        .filter(index => !usedStickerIndexes.includes(index));
 
-    return { ...stickersData[index] };
+    const randomIndex = availableIndexes[
+        Math.floor(Math.random() * availableIndexes.length)
+    ];
+
+    usedStickerIndexes.push(randomIndex);
+
+    return { ...stickersData[randomIndex] };
 }
 
 function resetForNewRound() {
@@ -215,7 +312,7 @@ function resetForNewRound() {
 }
 
 function loadRandomSticker() {
-    currentSticker = getRandomStickerExcludingLast();
+    currentSticker = getRandomStickerWithoutRepeat();
 
     const img = document.getElementById('stickerImage');
 
@@ -409,7 +506,7 @@ function startGame() {
     waitingForNext = false;
     isAnswered = false;
     roundDetails = [];
-    lastStickerIndex = -1;
+    usedStickerIndexes = [];
 
     updateRoundScoreUI();
     updateTotalScoreUI();
