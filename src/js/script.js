@@ -19,97 +19,6 @@ imagem: "./src/images/kim-namjoon.png",
 pais: "Coreia do Sul",
 profissao: "Rapper",
 frase: "RM"
-},
-{
-nome: "justin bieber",
-imagem: "./src/images/justin-bieber.png",
-pais: "Canadá",
-profissao: "Cantor",
-frase: "Baby"
-},
-{
-nome: "tobey maguire",
-imagem: "./src/images/tobey-maguire.png",
-pais: "Estados Unidos",
-profissao: "Ator",
-frase: "Homem-Aranha"
-},
-{
-nome: "andrew garfield",
-imagem: "./src/images/andrew-garfield.png",
-pais: "Estados Unidos",
-profissao: "Ator",
-frase: "The Amazing Spider-Man"
-},
-{
-nome: "tom holland",
-imagem: "./src/images/tom-holland.png",
-pais: "Reino Unido",
-profissao: "Ator",
-frase: "Marvel"
-},
-{
-nome: "hyunjin",
-imagem: "./src/images/hyunjin.png",
-pais: "Coreia do Sul",
-profissao: "Cantor",
-frase: "Stray Kids"
-},
-{
-nome: "felix",
-imagem: "./src/images/felix.png",
-pais: "Austrália",
-profissao: "Cantor",
-frase: "Deep Voice"
-},
-{
-nome: "zayn malik",
-imagem: "./src/images/zayn-malik.png",
-pais: "Reino Unido",
-profissao: "Cantor",
-frase: "Pillowtalk"
-},
-{
-nome: "kim seokjin",
-imagem: "./src/images/kim-seokjin.png",
-pais: "Coreia do Sul",
-profissao: "Cantor",
-frase: "Worldwide Handsome"
-},
-{
-nome: "louis tomlinson",
-imagem: "./src/images/louis-tomlinson.png",
-pais: "Reino Unido",
-profissao: "Cantor",
-frase: "One Direction"
-},
-{
-nome: "harry styles",
-imagem: "./src/images/harry-styles.png",
-pais: "Reino Unido",
-profissao: "Cantor",
-frase: "Watermelon Sugar"
-},
-{
-nome: "niall horan",
-imagem: "./src/images/niall-horan.png",
-pais: "Irlanda",
-profissao: "Cantor",
-frase: "Slow Hands"
-},
-{
-nome: "kim taehyung",
-imagem: "./src/images/kim-taehyung.png",
-pais: "Coreia do Sul",
-profissao: "Cantor",
-frase: "V"
-},
-{
-nome: "min yoongi",
-imagem: "./src/images/min-yoongi.png",
-pais: "Coreia do Sul",
-profissao: "Rapper",
-frase: "Suga"
 }
 ];
 
@@ -124,451 +33,466 @@ let attemptsRemaining = 3;
 let animationTimeout = null;
 let errorTimeout = null;
 let roundDetails = [];
-let usedStickerIndexes = [];
+let lastStickerIndex = -1;
 
 function normalizeString(str) {
-    return str.toLowerCase()
-        .normalize('NFD')
-        .replace(/[\u0300-\u036f]/g, '')
-        .replace(/\s+/g, ' ')
-        .trim();
+return str.toLowerCase()
+.normalize('NFD')
+.replace(/[\u0300-\u036f]/g, '')
+.replace(/\s+/g, ' ')
+.trim();
 }
 
 function updateRoundScoreUI() {
-    const scoreSpan = document.getElementById('scoreValue');
-    if (scoreSpan) scoreSpan.innerText = roundScore;
+const scoreSpan = document.getElementById('scoreValue');
+if (scoreSpan) scoreSpan.innerText = roundScore;
 }
 
 function updateTotalScoreUI() {
-    const totalSpan = document.getElementById('streakValue');
-    if (totalSpan) totalSpan.innerText = totalScore;
+const totalSpan = document.getElementById('streakValue');
+if (totalSpan) totalSpan.innerText = totalScore;
 }
 
 function updateAttemptsUI() {
-    const attemptsSpan = document.getElementById('attemptsCounter');
+const attemptsSpan = document.getElementById('attemptsCounter');
 
-    if (!attemptsSpan) return;
+if (!attemptsSpan) return;  
 
-    attemptsSpan.innerText = `Tentativas: ${attemptsRemaining}/3`;
+attemptsSpan.innerText = `Tentativas: ${attemptsRemaining}/3`;  
 
-    if (attemptsRemaining <= 1) {
-        attemptsSpan.style.color = '#ff7777';
-    } else {
-        attemptsSpan.style.color = '#EFBD14';
-    }
+if (attemptsRemaining <= 1) {  
+    attemptsSpan.style.color = '#ff7777';  
+} else {  
+    attemptsSpan.style.color = '#EFBD14';  
+}
+
 }
 
 function updateRoundHistoryUI() {
-    const roundList = document.getElementById('roundScoreList');
+const roundList = document.getElementById('roundScoreList');
 
-    if (!roundList) return;
+if (!roundList) return;  
 
-    if (roundDetails.length === 0) {
-        roundList.innerHTML = '<li class="empty-ranking">Nenhuma rodada ainda</li>';
-        return;
-    }
+if (roundDetails.length === 0) {  
+    roundList.innerHTML = '<li class="empty-ranking">Nenhuma rodada ainda</li>';  
+    return;  
+}  
 
-    const reversed = [...roundDetails].reverse();
+const reversed = [...roundDetails].reverse();  
 
-    roundList.innerHTML = reversed.map(item => `
-        <li>
-            <span>${item.personagem.toUpperCase()}</span>
-            <span>${item.pontos} pts</span>
-        </li>
-    `).join('');
+roundList.innerHTML = reversed.map(item => `  
+    <li>  
+        <span>${item.personagem.toUpperCase()}</span>  
+        <span>${item.pontos} pts</span>  
+    </li>  
+`).join('');
+
 }
 
 function showMessage(msg, isError = false) {
-    const msgDiv = document.getElementById('messageContent');
+const msgDiv = document.getElementById('messageContent');
 
-    if (!msgDiv) return;
+if (!msgDiv) return;  
 
-    msgDiv.innerText = msg;
-    msgDiv.style.color = isError ? '#ff9999' : '#EFBD14';
+msgDiv.innerText = msg;  
+msgDiv.style.color = isError ? '#ff9999' : '#EFBD14';
+
 }
 
 function highlightInputError() {
-    const input = document.getElementById('answerInput');
+const input = document.getElementById('answerInput');
 
-    if (!input) return;
+if (!input) return;  
 
-    if (errorTimeout) clearTimeout(errorTimeout);
+if (errorTimeout) clearTimeout(errorTimeout);  
 
-    input.classList.add('answer-input-error');
+input.classList.add('answer-input-error');  
 
-    errorTimeout = setTimeout(() => {
-        input.classList.remove('answer-input-error');
-    }, 500);
+errorTimeout = setTimeout(() => {  
+    input.classList.remove('answer-input-error');  
+}, 500);
+
 }
 
 function clearInput() {
-    const input = document.getElementById('answerInput');
+const input = document.getElementById('answerInput');
 
-    if (input) {
-        input.value = '';
-    }
+if (input) {  
+    input.value = '';  
+}
+
 }
 
 function revealStickerCompletely() {
-    const img = document.getElementById('stickerImage');
-    const glitter = document.getElementById('glitterContainer');
+const img = document.getElementById('stickerImage');
+const glitter = document.getElementById('glitterContainer');
 
-    img.classList.remove('sticker-blurred');
-    img.classList.add('sticker-clear');
+img.classList.remove('sticker-blurred');  
+img.classList.add('sticker-clear');  
 
-    img.style.filter = 'blur(0px)';
+img.style.filter = 'blur(0px)';  
 
-    glitter.classList.remove('hidden');
-    glitter.classList.add('glitter-active');
+glitter.classList.remove('hidden');  
+glitter.classList.add('glitter-active');
+
 }
 
 function resetStickerBlur() {
-    const img = document.getElementById('stickerImage');
+const img = document.getElementById('stickerImage');
 
-    img.classList.remove('sticker-clear');
-    img.classList.remove('sticker-expanded');
+img.classList.remove('sticker-clear');  
+img.classList.remove('sticker-expanded');  
 
-    img.classList.add('sticker-blurred');
+img.classList.add('sticker-blurred');  
 
-    img.style.filter = 'blur(20px)';
-    img.style.opacity = '0';
+img.style.filter = 'blur(20px)';  
+img.style.opacity = '0';
+
 }
 
 function showStickerBlurred() {
-    const img = document.getElementById('stickerImage');
+const img = document.getElementById('stickerImage');
 
-    requestAnimationFrame(() => {
-        img.style.opacity = '1';
-    });
+requestAnimationFrame(() => {  
+    img.style.opacity = '1';  
+});
+
 }
 
 function triggerPremiumAnimationAndContinue(callback) {
-    const img = document.getElementById('stickerImage');
-    const card = document.getElementById('stickerCard');
-    const glitter = document.getElementById('glitterContainer');
+const img = document.getElementById('stickerImage');
+const card = document.getElementById('stickerCard');
+const glitter = document.getElementById('glitterContainer');
 
-    revealStickerCompletely();
+revealStickerCompletely();  
 
-    img.classList.add('sticker-expanded');
-    card.classList.add('holographic-glow');
+img.classList.add('sticker-expanded');  
+card.classList.add('holographic-glow');  
 
-    animationTimeout = setTimeout(() => {
-        img.classList.remove('sticker-expanded');
-        card.classList.remove('holographic-glow');
+animationTimeout = setTimeout(() => {  
+    img.classList.remove('sticker-expanded');  
+    card.classList.remove('holographic-glow');  
 
-        glitter.classList.remove('glitter-active');
-        glitter.classList.add('hidden');
+    glitter.classList.remove('glitter-active');  
+    glitter.classList.add('hidden');  
 
-        if (callback) callback();
-    }, 5000);
+    if (callback) callback();  
+}, 5000);
+
 }
 
 function calculatePoints() {
-    if (hintsUsed === 0) return 100;
-    if (hintsUsed === 1) return 70;
-    if (hintsUsed === 2) return 40;
-    return 10;
+if (hintsUsed === 0) return 100;
+if (hintsUsed === 1) return 70;
+if (hintsUsed === 2) return 40;
+return 10;
 }
 
-function getRandomStickerWithoutRepeat() {
-    if (usedStickerIndexes.length >= stickersData.length) {
-        usedStickerIndexes = [];
-    }
+function getRandomStickerExcludingLast() {
+let index = Math.floor(Math.random() * stickersData.length);
 
-    let availableIndexes = stickersData
-        .map((_, index) => index)
-        .filter(index => !usedStickerIndexes.includes(index));
+while (index === lastStickerIndex && stickersData.length > 1) {  
+    index = Math.floor(Math.random() * stickersData.length);  
+}  
 
-    const randomIndex = availableIndexes[
-        Math.floor(Math.random() * availableIndexes.length)
-    ];
+lastStickerIndex = index;  
 
-    usedStickerIndexes.push(randomIndex);
+return { ...stickersData[index] };
 
-    return { ...stickersData[randomIndex] };
 }
 
 function resetForNewRound() {
-    attemptsRemaining = 3;
-    hintsUsed = 0;
-    isAnswered = false;
-    waitingForNext = false;
-    roundScore = 0;
+attemptsRemaining = 3;
+hintsUsed = 0;
+isAnswered = false;
+waitingForNext = false;
+roundScore = 0;
 
-    updateRoundScoreUI();
-    updateAttemptsUI();
+updateRoundScoreUI();  
+updateAttemptsUI();  
 
-    const input = document.getElementById('answerInput');
-    const hint = document.getElementById('hintContent');
+const input = document.getElementById('answerInput');  
+const hint = document.getElementById('hintContent');  
 
-    if (input) {
-        input.disabled = false;
-        input.value = '';
-    }
+if (input) {  
+    input.disabled = false;  
+    input.value = '';  
+}  
 
-    if (hint) {
-        hint.innerText = 'Clique em DICA para uma ajuda';
-    }
+if (hint) {  
+    hint.innerText = 'Clique em DICA para uma ajuda';  
+}
+
 }
 
 function loadRandomSticker() {
-    currentSticker = getRandomStickerWithoutRepeat();
+currentSticker = getRandomStickerExcludingLast();
 
-    const img = document.getElementById('stickerImage');
+const img = document.getElementById('stickerImage');  
 
-    resetStickerBlur();
+resetStickerBlur();  
 
-    const newImage = new Image();
+const newImage = new Image();  
 
-    newImage.src = currentSticker.imagem;
+newImage.src = currentSticker.imagem;  
 
-    newImage.onload = () => {
-        img.src = currentSticker.imagem;
+newImage.onload = () => {  
+    img.src = currentSticker.imagem;  
 
-        resetStickerBlur();
+    resetStickerBlur();  
 
-        setTimeout(() => {
-            showStickerBlurred();
-        }, 50);
-    };
+    setTimeout(() => {  
+        showStickerBlurred();  
+    }, 50);  
+};  
 
-    clearInput();
+clearInput();
+
 }
 
 function showFinalScreen() {
-    const gameContainer = document.getElementById('gameContainer');
-    const finalScreen = document.getElementById('finalScreen');
-    const finalDetails = document.getElementById('finalDetails');
-    const finalTotal = document.getElementById('finalTotalPoints');
+const gameContainer = document.getElementById('gameContainer');
+const finalScreen = document.getElementById('finalScreen');
+const finalDetails = document.getElementById('finalDetails');
+const finalTotal = document.getElementById('finalTotalPoints');
 
-    gameContainer.classList.add('hidden');
+gameContainer.classList.add('hidden');  
 
-    finalScreen.classList.remove('hidden');
-    finalScreen.style.display = 'flex';
+finalScreen.classList.remove('hidden');  
+finalScreen.style.display = 'flex';  
 
-    document.body.style.overflow = 'hidden';
+document.body.style.overflow = 'hidden';  
 
-    let html = '';
+let html = '';  
 
-    roundDetails.forEach((round, index) => {
-        html += `
-        <div class="final-round-item">
-            <div class="final-round-header">Rodada ${index + 1}</div>
-            <div class="final-round-detail">
-                <span>Personagem:</span>
-                <span>${round.personagem.toUpperCase()}</span>
-            </div>
-            <div class="final-round-detail">
-                <span>Dicas usadas:</span>
-                <span>${round.dicasUsadas}</span>
-            </div>
-            <div class="final-round-detail">
-                <span>Pontos:</span>
-                <span>${round.pontos}</span>
-            </div>
-            <div class="final-round-detail">
-                <span>Resultado:</span>
-                <span>${round.acertou ? 'Acertou' : 'Perdeu'}</span>
-            </div>
-        </div>
-        `;
-    });
+roundDetails.forEach((round, index) => {  
+    html += `  
+    <div class="final-round-item">  
+        <div class="final-round-header">Rodada ${index + 1}</div>  
+        <div class="final-round-detail">  
+            <span>Personagem:</span>  
+            <span>${round.personagem.toUpperCase()}</span>  
+        </div>  
+        <div class="final-round-detail">  
+            <span>Dicas usadas:</span>  
+            <span>${round.dicasUsadas}</span>  
+        </div>  
+        <div class="final-round-detail">  
+            <span>Pontos:</span>  
+            <span>${round.pontos}</span>  
+        </div>  
+        <div class="final-round-detail">  
+            <span>Resultado:</span>  
+            <span>${round.acertou ? 'Acertou' : 'Perdeu'}</span>  
+        </div>  
+    </div>  
+    `;  
+});  
 
-    finalDetails.innerHTML = html;
-    finalTotal.innerText = `Total de pontos: ${totalScore}`;
+finalDetails.innerHTML = html;  
+finalTotal.innerText = `Total de pontos: ${totalScore}`;
+
 }
 
 function nextRound() {
-    if (currentRound >= 5) {
-        showFinalScreen();
-        return;
-    }
+if (currentRound >= 5) {
+showFinalScreen();
+return;
+}
 
-    resetForNewRound();
-    loadRandomSticker();
+resetForNewRound();  
+loadRandomSticker();  
 
-    showMessage('Pronto para adivinhar');
+showMessage('Pronto para adivinhar');
+
 }
 
 function handleRoundEnd(pointsEarned, victory) {
-    roundScore = pointsEarned;
-    totalScore += pointsEarned;
+roundScore = pointsEarned;
+totalScore += pointsEarned;
 
-    updateRoundScoreUI();
-    updateTotalScoreUI();
+updateRoundScoreUI();  
+updateTotalScoreUI();  
 
-    roundDetails.push({
-        personagem: currentSticker.nome,
-        dicasUsadas: hintsUsed,
-        pontos: pointsEarned,
-        acertou: victory
-    });
+roundDetails.push({  
+    personagem: currentSticker.nome,  
+    dicasUsadas: hintsUsed,  
+    pontos: pointsEarned,  
+    acertou: victory  
+});  
 
-    updateRoundHistoryUI();
+updateRoundHistoryUI();  
 
-    currentRound++;
+currentRound++;  
 
-    isAnswered = true;
-    waitingForNext = true;
+isAnswered = true;  
+waitingForNext = true;  
 
-    if (victory) {
-        showMessage(`Acertou! Era ${currentSticker.nome.toUpperCase()}`);
-    } else {
-        showMessage(`Era ${currentSticker.nome.toUpperCase()}`, true);
-    }
+if (victory) {  
+    showMessage(`Acertou! Era ${currentSticker.nome.toUpperCase()}`);  
+} else {  
+    showMessage(`Era ${currentSticker.nome.toUpperCase()}`, true);  
+}  
 
-    triggerPremiumAnimationAndContinue(() => {
-        nextRound();
-    });
+triggerPremiumAnimationAndContinue(() => {  
+    nextRound();  
+});
+
 }
 
 function giveHint() {
-    if (!currentSticker) return;
+if (!currentSticker) return;
 
-    if (hintsUsed === 0) {
-        document.getElementById('hintContent').innerText = `País: ${currentSticker.pais}`;
-        hintsUsed++;
-        return;
-    }
+if (hintsUsed === 0) {  
+    document.getElementById('hintContent').innerText = `País: ${currentSticker.pais}`;  
+    hintsUsed++;  
+    return;  
+}  
 
-    if (hintsUsed === 1) {
-        document.getElementById('hintContent').innerText = `Profissão: ${currentSticker.profissao}`;
-        hintsUsed++;
-        return;
-    }
+if (hintsUsed === 1) {  
+    document.getElementById('hintContent').innerText = `Profissão: ${currentSticker.profissao}`;  
+    hintsUsed++;  
+    return;  
+}  
 
-    if (hintsUsed === 2) {
-        document.getElementById('hintContent').innerText = `Frase: ${currentSticker.frase}`;
-        hintsUsed++;
-        return;
-    }
+if (hintsUsed === 2) {  
+    document.getElementById('hintContent').innerText = `Frase: ${currentSticker.frase}`;  
+    hintsUsed++;  
+    return;  
+}  
 
-    showMessage('Todas as dicas já foram usadas');
+showMessage('Todas as dicas já foram usadas');
+
 }
 
 function checkAnswer() {
-    if (waitingForNext || isAnswered) return;
+if (waitingForNext || isAnswered) return;
 
-    const input = document.getElementById('answerInput');
+const input = document.getElementById('answerInput');  
 
-    if (!input) return;
+if (!input) return;  
 
-    const value = input.value;
+const value = input.value;  
 
-    if (!value.trim()) {
-        highlightInputError();
-        return;
-    }
+if (!value.trim()) {  
+    highlightInputError();  
+    return;  
+}  
 
-    const normalizedUser = normalizeString(value);
-    const normalizedCorrect = normalizeString(currentSticker.nome);
+const normalizedUser = normalizeString(value);  
+const normalizedCorrect = normalizeString(currentSticker.nome);  
 
-    if (normalizedUser === normalizedCorrect) {
-        handleRoundEnd(calculatePoints(), true);
-        return;
-    }
+if (normalizedUser === normalizedCorrect) {  
+    handleRoundEnd(calculatePoints(), true);  
+    return;  
+}  
 
-    attemptsRemaining--;
+attemptsRemaining--;  
 
-    updateAttemptsUI();
+updateAttemptsUI();  
 
-    highlightInputError();
+highlightInputError();  
 
-    clearInput();
+clearInput();  
 
-    if (attemptsRemaining <= 0) {
-        handleRoundEnd(0, false);
-        return;
-    }
+if (attemptsRemaining <= 0) {  
+    handleRoundEnd(0, false);  
+    return;  
+}  
 
-    showMessage(`Errado! Tentativas restantes: ${attemptsRemaining}`, true);
+showMessage(`Errado! Tentativas restantes: ${attemptsRemaining}`, true);
+
 }
 
 function startGame() {
-    const cover = document.getElementById('coverScreen');
-    const game = document.getElementById('gameContainer');
-    const finalScreen = document.getElementById('finalScreen');
+const cover = document.getElementById('coverScreen');
+const game = document.getElementById('gameContainer');
+const finalScreen = document.getElementById('finalScreen');
 
-    cover.style.display = 'none';
+cover.style.display = 'none';  
 
-    game.classList.remove('hidden');
+game.classList.remove('hidden');  
 
-    finalScreen.classList.add('hidden');
-    finalScreen.style.display = 'none';
+finalScreen.classList.add('hidden');  
+finalScreen.style.display = 'none';  
 
-    document.body.style.overflow = 'hidden';
+document.body.style.overflow = 'hidden';  
 
-    currentRound = 0;
-    totalScore = 0;
-    roundScore = 0;
-    hintsUsed = 0;
-    attemptsRemaining = 3;
-    waitingForNext = false;
-    isAnswered = false;
-    roundDetails = [];
-    usedStickerIndexes = [];
+currentRound = 0;  
+totalScore = 0;  
+roundScore = 0;  
+hintsUsed = 0;  
+attemptsRemaining = 3;  
+waitingForNext = false;  
+isAnswered = false;  
+roundDetails = [];  
+lastStickerIndex = -1;  
 
-    updateRoundScoreUI();
-    updateTotalScoreUI();
-    updateRoundHistoryUI();
-    updateAttemptsUI();
+updateRoundScoreUI();  
+updateTotalScoreUI();  
+updateRoundHistoryUI();  
+updateAttemptsUI();  
 
-    nextRound();
+nextRound();
+
 }
 
 function restartGame() {
-    const finalScreen = document.getElementById('finalScreen');
+const finalScreen = document.getElementById('finalScreen');
 
-    finalScreen.classList.add('hidden');
-    finalScreen.style.display = 'none';
+finalScreen.classList.add('hidden');  
+finalScreen.style.display = 'none';  
 
-    document.body.style.overflow = 'hidden';
+document.body.style.overflow = 'hidden';  
 
-    startGame();
+startGame();
+
 }
 
 function attachEventListeners() {
-    const startBtn = document.getElementById('startGameBtn');
-    const restartBtn = document.getElementById('restartGameBtn');
-    const answerBtn = document.getElementById('answerBtn');
-    const hintBtn = document.getElementById('hintBtn');
-    const input = document.getElementById('answerInput');
+const startBtn = document.getElementById('startGameBtn');
+const restartBtn = document.getElementById('restartGameBtn');
+const answerBtn = document.getElementById('answerBtn');
+const hintBtn = document.getElementById('hintBtn');
+const input = document.getElementById('answerInput');
 
-    if (startBtn) {
-        startBtn.addEventListener('click', startGame);
-    }
+if (startBtn) {  
+    startBtn.addEventListener('click', startGame);  
+}  
 
-    if (restartBtn) {
-        restartBtn.addEventListener('click', restartGame);
-    }
+if (restartBtn) {  
+    restartBtn.addEventListener('click', restartGame);  
+}  
 
-    if (answerBtn) {
-        answerBtn.addEventListener('click', checkAnswer);
-    }
+if (answerBtn) {  
+    answerBtn.addEventListener('click', checkAnswer);  
+}  
 
-    if (hintBtn) {
-        hintBtn.addEventListener('click', giveHint);
-    }
+if (hintBtn) {  
+    hintBtn.addEventListener('click', giveHint);  
+}  
 
-    if (input) {
-        input.addEventListener('keypress', e => {
-            if (e.key === 'Enter') {
-                checkAnswer();
-            }
-        });
-    }
+if (input) {  
+    input.addEventListener('keypress', e => {  
+        if (e.key === 'Enter') {  
+            checkAnswer();  
+        }  
+    });  
+}
+
 }
 
 document.addEventListener('DOMContentLoaded', () => {
-    attachEventListeners();
+attachEventListeners();
 
-    const game = document.getElementById('gameContainer');
-    const finalScreen = document.getElementById('finalScreen');
+const game = document.getElementById('gameContainer');  
+const finalScreen = document.getElementById('finalScreen');  
 
-    game.classList.add('hidden');
+game.classList.add('hidden');  
 
-    finalScreen.classList.add('hidden');
-    finalScreen.style.display = 'none';
+finalScreen.classList.add('hidden');  
+finalScreen.style.display = 'none';  
 
-    document.body.style.overflow = 'hidden';
+document.body.style.overflow = 'hidden';
+
 });
